@@ -74,7 +74,34 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        # We use the manhattan distance to the food as the parameter for calculating the evaluation score.
+        # We calculate the distance to each food and then take the minimum of all the distances and return the
+        # negative of that as the score to reflect the inverse proportionality
+        currentPos = list(successorGameState.getPacmanPosition())
+        # Define negative maximum to a very high negative integer, so that it can be used
+        # for comparison
+        min = 999999999
+        dist = 0
+        currentFood = currentGameState.getFood()
+        # Get the current food as a list
+        foodList = currentFood.asList()
+        for i in range(len(foodList)):
+            # Here, we find the minimum distance to each food in the food list and then take the minimum distance
+            # as the return value. Note, that in the end, we change the sign of the minimum distance in the end to
+            # reflect the correct nature of the inverse proportionality of the distance of the food
+            dist =  (manhattanDistance(foodList[i], currentPos))
+            if dist < min:
+                min = dist
+        min = -min
+        # If there is a ghost at the current position, return with the maximum negative score
+        for state in newGhostStates:
+            if state.scaredTimer == 0 and state.getPosition() == tuple(currentPos):
+                return -999999999
+
+        # If we encounter a 'Stop' in the actions list, then return with the maximum negative score
+        if action == 'Stop':
+            return -999999999
+        return min
 
 def scoreEvaluationFunction(currentGameState):
     """
@@ -181,7 +208,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
             return None, self.evaluationFunction(gameState)
         return best_action, best_score  # Return the best_action and best_score
 
-
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
       Your minimax agent with alpha-beta pruning (question 3)
@@ -258,7 +284,6 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             return None, self.evaluationFunction(gameState)
         return best_action, best_score  # Return the best_action and best_score
 
-
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
       Your expectimax agent (question 4)
@@ -273,7 +298,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
-
+        
 def betterEvaluationFunction(currentGameState):
     """
       Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
