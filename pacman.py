@@ -676,8 +676,12 @@ if __name__ == '__main__':
 
     > python pacman.py --help
     """
+    starttime = time.time()
     args = readCommand( sys.argv[1:] ) # Get game components based on input
     runGames( **args )
+    print('Running time: %.1f secs' % ((time.time() - starttime)))
+    import resource
+    print('Memory usage: %.2f MB' % (resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0))
 
     # import cProfile
     # cProfile.run("runGames( **args )")
